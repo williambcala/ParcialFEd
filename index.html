@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cliente</title>
+</head>
+<body>
+  <h1>Realizar un Pedido</h1>
+
+  <form id="pedidoForm">
+    <label for="xInput">Digite la coordenada X:</label>
+    <input type="number" id="xInput" required>
+    <br>
+    <label for="yInput">Digite la coordenada y:</label>
+    <input type="number" id="yInput" required>
+    <br>
+    <button type="submit">realizar un pedido</button>
+  </form>
+
+  <div id="coordenadasContainer">
+    <h2>Coordenadas:</h2>
+    <ul id="coordenadasList"></ul>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const pedidoForm = document.getElementById('pedidoForm');
+    const X = document.getElementById('Coordenada en x');
+    const Y = document.getElementById('Coordenada en Y');
+    const coordenadasList = document.getElementById('coordenadasList');
+
+  
+    pedidoForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const x = parseFloat(xInput.value);
+      const y = parseFloat(yInput.value);
+
+  
+      socket.emit('pedido', { x, y }, (coordenadas) => {
+
+        coordenadasList.innerHTML = '';
+
+        coordenadas.forEach((coordenada) => {
+          const item = document.createElement('');
+          item.textContent = `X: ${coordenada.x}, Y: ${coordenada.y}`;
+          coordenadasList.appendChild(item);
+        });
+      });
+    });
+
+    
+  </script>
+</body>
+</html>
